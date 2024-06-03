@@ -50,13 +50,75 @@ npx prisma migrate dev --name init
 npx prisma generate
 ```
 
+## Step 8: Populate the Database
+We create a script2.ts file that contains `main()` and `query()` functions. If you run main function it will populate add some sample data to the database.
+to run it you can use
+```
+npx nodemon script.ts
+
+```
+
+## Step 9: Query the Database
+We create a script2.ts file that contains `main()` and `query()` functions. If you run query function it will show up some information from the database.
+to run it you can use
+```
+npx nodemon script.ts
+
+```
+
+# Let's learn one-to-many and many-to-many relationships
+
+## One-to-Many Relationship
+In a one-to-many relationship, a single record in one table can be related to multiple records in another table. For example, a Customer can place multiple Orders, but each Order belongs to a single Customer.
+
+```
+model Customer {
+  id      Int     @id @default(autoincrement())
+  name    String
+  email   String  @unique
+  address String
+  orders  Order[]
+}
+
+model Order {
+  id         Int      @id @default(autoincrement())
+  orderDate  DateTime
+  orderStatus String
+  customerId Int
+  customer   Customer @relation(fields: [customerId], references: [id])
+}
 
 
+```
+## Many-to-Many Relationship
+In a many-to-many relationship, multiple records in one table can be related to multiple records in another table. For example, a Book can have multiple Authors, and an Author can write multiple Books.
+```
+model Book {
+  ISBN            String     @id
+  title           String
+  genre           String
+  publicationYear Int
+  price           Float
+  authors         AuthorBook[]
+}
 
+model Author {
+  id       Int          @id @default(autoincrement())
+  name     String
+  email    String       @unique
+  biography String
+  books    AuthorBook[]
+}
 
+model AuthorBook {
+  authorId Int
+  bookISBN String
+  author   Author @relation(fields: [authorId], references: [id])
+  book     Book   @relation(fields: [bookISBN], references: [ISBN])
 
-
-
+  @@id([authorId, bookISBN])
+}
+```
 
 
 
